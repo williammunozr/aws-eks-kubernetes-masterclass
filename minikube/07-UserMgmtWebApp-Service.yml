@@ -4,6 +4,7 @@ metadata:
   name: usermgmt-webapp-service
   labels: 
     app: usermgmt-webapp
+  namespace: dev3
 spec: 
   type: ClusterIP #LoadBalancer
   selector: 

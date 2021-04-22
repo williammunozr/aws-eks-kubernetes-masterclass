@@ -4,6 +4,7 @@ metadata:
   name: usermgmt-webapp
   labels:
     app: usermgmt-webapp
+  namespace: dev3
 spec:
   replicas: 1
   selector:
@@ -52,10 +53,3 @@ spec:
               port: 8095
             initialDelaySeconds: 60
             periodSeconds: 10
-          resources:
-            requests:
-              cpu: "500m" 
-              memory: "128Mi"
-            limits:
-              cpu: "1000m"
-              memory: "500Mi"
