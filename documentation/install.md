@@ -86,8 +86,58 @@ eksctl get cluster --profile cloud-nation-production
 eksctl get nodegroups --cluster=eksdemo1 --profile cloud-nation-production
 ```
 
-### Connect to cluster
+## Connect to cluster
 
 ```
 aws eks --region us-east-1 update-kubeconfig --name eksdemo1 --profile cloud-nation-production
 ```
+
+## Edit Pod Security Policy
+
+```
+kubectl edit psp eks.privileged
+
+Add after:
+
+allowPrivilegeEscalation: true
+allowedUnsafeSysctls:
+- net.ipv4.tcp_keepalive_time
+- net.ipv4.tcp_keepalive_intvl
+- net.ipv4.tcp_keepalive_probes
+```
+
+## Pod sysctl configuration
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-pod
+spec:
+  securityContext:
+    sysctls:
+    - name: net.ipv4.tcp_keepalive_time
+      value: "120"
+    - name: net.ipv4.tcp_keepalive_intvl
+      value: "60"
+    - name: net.ipv4.tcp_keepalive_probes
+      value: "30" 
+  containers:
+  - name: sdk
+    image: mcr.microsoft.com/dotnet/runtime:5.0-alpine3.13
+```
+
+## Deploy a pod with sysctl configuration
+
+```
+kubectl apply -f pod-sysctl.yaml
+```
+
+## Cleaning
+
+### Delete the node group
+
+```
+eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cloud-nation-production
+```
+

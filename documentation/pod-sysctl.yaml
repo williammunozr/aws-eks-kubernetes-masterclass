@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-pod
+spec:
+  securityContext:
+    sysctls:
+    - name: net.ipv4.tcp_keepalive_time
+      value: "120"
+    - name: net.ipv4.tcp_keepalive_intvl
+      value: "60"
+    - name: net.ipv4.tcp_keepalive_probes
+      value: "30" 
+  containers:
+  - name: sdk
+    image: mcr.microsoft.com/dotnet/runtime:5.0-alpine3.13

@@ -10,7 +10,7 @@ nodeGroups:
     instanceType: t3.medium
     desiredCapacity: 1
     kubeletExtraConfig:
-        allowedUnsafeSysctl:
+        allowedUnsafeSysctls:
         - net.ipv4.tcp_keepalive_time
         - net.ipv4.tcp_keepalive_intvl
         - net.ipv4.tcp_keepalive_probes
