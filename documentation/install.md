@@ -37,7 +37,7 @@ eksctl create nodegroup --cluster=eksdemo1 \
                        --nodes-max=4 \
                        --node-volume-size=20 \
                        --ssh-access \
-                       --ssh-public-key=kube-demo \
+                       --ssh-public-key=cloud-station \
                        --managed \
                        --asg-access \
                        --external-dns-access \
