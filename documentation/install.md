@@ -181,3 +181,4 @@ eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cl
 
 - https://eksctl.io/usage/customizing-the-kubelet/
 - https://eksctl.io/usage/managing-nodegroups/
+- https://itnext.io/of-kubernetes-unsafe-sysctls-performance-optimization-on-eks-d36cc0e3e894
