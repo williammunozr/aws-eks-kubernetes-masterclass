@@ -73,3 +73,15 @@ nodeGroups:
         - net.ipv4.tcp_keepalive_intvl
         - net.ipv4.tcp_keepalive_probes
 ```
+
+## Get cluster
+
+```
+eksctl get cluster --profile cloud-nation-production
+```
+
+## Get nodegroups 
+
+```
+eksctl get nodegroups --cluster=eksdemo1 --profile cloud-nation-production
+```
