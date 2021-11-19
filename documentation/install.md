@@ -141,3 +141,7 @@ kubectl apply -f pod-sysctl.yaml
 eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cloud-nation-production
 ```
 
+## Documentation
+
+- https://eksctl.io/usage/customizing-the-kubelet/
+- https://eksctl.io/usage/managing-nodegroups/
