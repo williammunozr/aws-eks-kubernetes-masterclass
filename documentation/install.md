@@ -46,3 +46,30 @@ eksctl create nodegroup --cluster=eksdemo1 \
                        --alb-ingress-access \
                        --profile cloud-nation-production
 ```
+
+## Create a node group customizing kubelet configuration
+
+```
+eksctl create nodegroup --config-file=ng-sysctl-enabled.yaml --profile cloud-nation-production
+```
+
+### ng-sysctl-enabled.yaml file
+
+```
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eksdemo1
+  region: us-east-1
+
+nodeGroups:
+  - name: ng-sysctl-enabled
+    instanceType: t3.medium
+    desiredCapacity: 1
+    kubeletExtraConfig:
+        allowedUnsafeSysctl:
+        - net.ipv4.tcp_keepalive_time
+        - net.ipv4.tcp_keepalive_intvl
+        - net.ipv4.tcp_keepalive_probes
+```
