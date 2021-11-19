@@ -127,6 +127,28 @@ spec:
     image: mcr.microsoft.com/dotnet/runtime:5.0-alpine3.13
 ```
 
+## Busybox test
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-busybox
+spec:
+  securityContext:
+    sysctls:
+    - name: net.ipv4.tcp_keepalive_time
+      value: "120"
+    - name: net.ipv4.tcp_keepalive_intvl
+      value: "60"
+    - name: net.ipv4.tcp_keepalive_probes
+      value: "30" 
+  containers:
+  - name: busybox
+    image: busybox
+    command: ['sh', '-c', 'sleep 1048']
+```
+
 ## Deploy a pod with sysctl configuration
 
 ```
