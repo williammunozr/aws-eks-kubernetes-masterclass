@@ -177,6 +177,12 @@ net.ipv4.tcp_keepalive_probes = 30
 eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cloud-nation-production
 ```
 
+### Delete the cluster
+
+```
+eksctl delete cluster eksdemo1 --profile cloud-nation-production
+```
+
 ## Documentation
 
 - https://eksctl.io/usage/customizing-the-kubelet/
