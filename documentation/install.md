@@ -85,3 +85,9 @@ eksctl get cluster --profile cloud-nation-production
 ```
 eksctl get nodegroups --cluster=eksdemo1 --profile cloud-nation-production
 ```
+
+### Connect to cluster
+
+```
+aws eks --region us-east-1 update-kubeconfig --name eksdemo1 --profile cloud-nation-production
+```
