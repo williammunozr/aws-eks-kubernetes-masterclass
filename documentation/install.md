@@ -131,6 +131,20 @@ spec:
 
 ```
 kubectl apply -f pod-sysctl.yaml
+kubectl apply -f busybox-sysctl.yaml
+```
+
+### Read parameters in the busybox container
+
+```
+kubectl exec sysctl-busybox -it -- sh
+
+/ # sysctl net.ipv4.tcp_keepalive_time
+net.ipv4.tcp_keepalive_time = 120
+/ # sysctl net.ipv4.tcp_keepalive_intvl
+net.ipv4.tcp_keepalive_intvl = 60
+/ # sysctl net.ipv4.tcp_keepalive_probes
+net.ipv4.tcp_keepalive_probes = 30
 ```
 
 ## Cleaning
