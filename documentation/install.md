@@ -10,7 +10,7 @@ eksctl create cluster --name=eksdemo1 \
                       --profile cloud-nation-production
 
 # Get List of Clusters
-eksctl get cluster
+eksctl get cluster --profile cloud-nation-production
 ```
 
 ## Create & Associate IAM OIDC Provider for EKS Cluster
