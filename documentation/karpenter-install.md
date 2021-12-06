@@ -172,3 +172,34 @@ I1206 20:52:40.755759       1 leaderelection.go:253] successfully acquired lease
 2021-12-06T20:53:33.311Z	INFO	controller.provisioning	Waiting for unschedulable pods	{"commit": "6984094", "provisioner": "default"}
 ```
 
+### Automatic Node Provisioning
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inflate
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: inflate
+  template:
+    metadata:
+      labels:
+        app: inflate
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: inflate
+          image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
+          resources:
+            requests:
+              cpu: 1
+EOF
+
+kubectl scale deployment inflate --replicas 5
+kubectl logs -f -n karpenter $(kubectl get pods -n karpenter -l karpenter=controller -o name)
+```
+
