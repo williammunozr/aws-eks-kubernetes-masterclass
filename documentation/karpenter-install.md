@@ -203,3 +203,35 @@ kubectl scale deployment inflate --replicas 5
 kubectl logs -f -n karpenter $(kubectl get pods -n karpenter -l karpenter=controller -o name)
 ```
 
+### Automatic Node Scale Down
+
+```
+k scale deploy inflate --replicas=3
+deployment.apps/inflate scaled
+```
+
+```
+k logs karpenter-controller-9698d9bdc-9jkct -n karpenter
+
+2021-12-06T21:05:04.257Z	INFO	controller.provisioning	Launched instance: i-01376780e2d25467e, hostname: ip-192-168-127-113.ec2.internal, type: c5.xlarge, zone: us-east-1d, capacityType: spot	{"commit": "6984094", "provisioner": "default"}
+2021-12-06T21:05:04.299Z	INFO	controller.provisioning	Bound 3 pod(s) to node ip-192-168-127-113.ec2.internal{"commit": "6984094", "provisioner": "default"}
+2021-12-06T21:05:04.299Z	INFO	controller.provisioning	Waiting for unschedulable pods	{"commit": "6984094", "provisioner": "default"}
+2021-12-06T21:41:00.039Z	INFO	controller.node	Added TTL to empty node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
+2021-12-06T21:41:00.065Z	INFO	controller.node	Added TTL to empty node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
+2021-12-06T21:41:30.066Z	INFO	controller.node	Triggering termination after 30s for empty node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
+2021-12-06T21:41:30.113Z	INFO	controller.termination	Cordoned node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
+2021-12-06T21:41:30.328Z	INFO	controller.termination	Deleted node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
+```
+
+### Delete deployment
+
+```
+k delete deploy inflate
+deployment.apps "inflate" deleted
+```
+
+```
+k get nodes
+NAME                             STATUS   ROLES    AGE   VERSION
+ip-192-168-36-138.ec2.internal   Ready    <none>   62m   v1.21.5-eks-bc4871b
+```
