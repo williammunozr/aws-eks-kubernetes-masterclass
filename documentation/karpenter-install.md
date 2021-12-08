@@ -287,3 +287,85 @@ k get nodes
 NAME                             STATUS   ROLES    AGE   VERSION
 ip-192-168-36-138.ec2.internal   Ready    <none>   62m   v1.21.5-eks-bc4871b
 ```
+
+## Setting Instance Type
+
+### Create a default node provisioner
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["on-demand"]
+  provider:
+    instanceProfile: KarpenterNodeInstanceProfile-${CLUSTER_NAME}
+  ttlSecondsAfterEmpty: 30
+EOF
+```
+
+### Deployment with m5.large instance type
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inflate
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: inflate
+  template:
+    metadata:
+      labels:
+        app: inflate
+    spec:
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5.large
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: inflate
+          image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
+          resources:
+            requests:
+              cpu: 1
+EOF
+
+kubectl scale deploy inflate --replicas=2
+```
+
+### Deployment with t3.xlarge instance type
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      nodeSelector:
+        node.kubernetes.io/instance-type: t3.xlarge
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: nginx
+          image: nginx
+EOF
+
+kubectl scale deploy nginx --replicas=30
+```
