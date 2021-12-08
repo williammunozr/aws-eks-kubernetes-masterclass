@@ -114,12 +114,18 @@ cat <<EOF | kubectl apply -f -
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
-  name: default
+  name: default-provisioner
 spec:
   requirements:
     - key: karpenter.sh/capacity-type
       operator: In
       values: ["spot"]
+      
+  # Taints may prevent pods from scheduling if they are not tolerated
+  taints:
+    - key: cloud-nation.net/default-provisioner
+      effect: NoSchedule
+      
   limits:
     resources:
       cpu: 1000
@@ -197,6 +203,10 @@ spec:
           resources:
             requests:
               cpu: 1
+      tolerations:
+      - key: "cloud-nation.net/default-provisioner"
+        operator: "Exists"
+        effect: "NoSchedule"
 EOF
 
 kubectl scale deployment inflate --replicas 5
@@ -222,6 +232,48 @@ k logs karpenter-controller-9698d9bdc-9jkct -n karpenter
 2021-12-06T21:41:30.113Z	INFO	controller.termination	Cordoned node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
 2021-12-06T21:41:30.328Z	INFO	controller.termination	Deleted node	{"commit": "6984094", "node": "ip-192-168-107-49.ec2.internal"}
 ```
+
+## Adding other Karpenter Provisioner
+
+The following Karpenter Provisioner can be used only if the Deployment has an specific taint.
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: nginx-provisioner
+spec:
+  requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["on-demand"]
+
+  # Taints may prevent pods from scheduling if they are not tolerated
+  taints:
+    - key: cloud-nation.net/nginx-provisioner
+      effect: NoSchedule
+      
+  provider:
+    instanceProfile: KarpenterNodeInstanceProfile-${CLUSTER_NAME}
+    
+  # If nil, the feature is disabled, nodes will never scale down
+  ttlSecondsAfterEmpty: 30
+EOF
+```
+
+### Provisioners List
+
+```
+kubectl get provisioner
+NAME                AGE
+default-provisioner   2m1s
+nginx-provisioner     8m49s
+```
+
+### Using the Karpenter nginx-provisioner
+
+
 
 ### Delete deployment
 
