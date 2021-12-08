@@ -273,7 +273,39 @@ nginx-provisioner     8m49s
 
 ### Using the Karpenter nginx-provisioner
 
+### Create nginx deployment
 
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: nginx
+          image: nginx
+          resources:
+            requests:
+              cpu: 1
+      tolerations:
+      - key: "cloud-nation.net/nginx-provisioner"
+        operator: "Exists"
+        effect: "NoSchedule"
+EOF
+
+kubectl scale deployment nginx --replicas 5
+```
 
 ### Delete deployment
 
