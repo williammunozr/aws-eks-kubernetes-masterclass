@@ -11,14 +11,14 @@ Cluster Autoscaler is a tool that automatically adjusts the size of a Kubernetes
 ## Create Cluster
 
 ```
-eksctl create cluster --name=eksdemo1 \
+eksctl create cluster --name=calico \
                       --region=us-east-1 \
                       --zones=us-east-1a,us-east-1b,us-east-1c \
                       --without-nodegroup \
-                      --profile cloud-nation-production
+                      --profile dev-cloud-nation
 
 # Get List of Clusters
-eksctl get cluster --profile cloud-nation-production
+eksctl get cluster --profile dev-cloud-nation
 ```
 
 ## Create & Associate IAM OIDC Provider for EKS Cluster
@@ -27,9 +27,9 @@ eksctl get cluster --profile cloud-nation-production
 # Replace with region & cluster name
 eksctl utils associate-iam-oidc-provider \
     --region us-east-1 \
-    --cluster eksdemo1 \
+    --cluster calico \
     --approve \
-    --profile cloud-nation-production
+    --profile dev-cloud-nation
 ```
 
 ## Create a node group
@@ -38,9 +38,9 @@ Validate if the node group has the option `--asg-access` is enabled.
 
 ```
 # Create Public Node Group   
-eksctl create nodegroup --cluster=eksdemo1 \
+eksctl create nodegroup --cluster=calico \
                        --region=us-east-1 \
-                       --name=eksdemo1-ng-public1 \
+                       --name=calico-ng-public1 \
                        --node-type=t3.medium \
                        --nodes=1 \
                        --nodes-min=1 \
@@ -54,7 +54,7 @@ eksctl create nodegroup --cluster=eksdemo1 \
                        --full-ecr-access \
                        --appmesh-access \
                        --alb-ingress-access \
-                       --profile cloud-nation-production
+                       --profile dev-cloud-nation
 ```
 
 ## Deploy Cluster Autoscaler
@@ -76,14 +76,14 @@ kubectl -n kube-system annotate deployment.apps/cluster-autoscaler cluster-autos
 kubectl -n kube-system edit deployment.apps/cluster-autoscaler
 ```
 
-Search the following line and change `<YOUR CLUSTER NAME>` with the name of the cluster, in this example is `eksdemo1`.
+Search the following line and change `<YOUR CLUSTER NAME>` with the name of the cluster, in this example is `calico`.
 
 ```
 - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<YOUR CLUSTER NAME>
 
 Should be:
 
-- --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksdemo1
+- --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/calico
 
 And add the following lines:
 
@@ -139,7 +139,7 @@ Sample partial output:
         - --cloud-provider=aws
         - --skip-nodes-with-local-storage=false
         - --expander=least-waste
-        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksdemo1
+        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/calico
         - --balance-similar-node-groups
         - --skip-nodes-with-system-pods=false
         image: us.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler:v1.21.1
@@ -156,13 +156,13 @@ kubectl -n kube-system logs -f deployment.apps/cluster-autoscaler
 ### Delete the node group
 
 ```
-eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cloud-nation-production
+eksctl delete nodegroup --cluster=calico --name=ng-sysctl-enabled --profile dev-cloud-nation
 ```
 
 ### Delete the cluster
 
 ```
-eksctl delete cluster eksdemo1 --profile cloud-nation-production
+eksctl delete cluster calico --profile dev-cloud-nation
 ```
 
 ## Documentation
