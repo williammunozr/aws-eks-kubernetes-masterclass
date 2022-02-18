@@ -57,6 +57,26 @@ eksctl create nodegroup --cluster=calico \
                        --profile dev-cloud-nation
 ```
 
+## Create a private node group
+
+```
+eksctl create nodegroup \
+	--alb-ingress-access \
+	--asg-access \
+	--cluster=calico \
+	--external-dns-access \
+	--full-ecr-access \
+	--managed \
+	--name=lab-ng \
+	--node-type=t3.medium \
+	--nodes=1 \
+	--nodes-max=5 \
+	--nodes-min=0 \
+	--node-volume-size=20 \
+	--region=us-east-1 \
+	--node-private-networking
+```
+
 ## Deploy Cluster Autoscaler
 
 ```
