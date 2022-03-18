@@ -24,11 +24,21 @@ kubectl apply -f kube-manifests/
 # List Storage Classes
 kubectl get sc
 
+NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+ebs-sc          ebs.csi.aws.com         Delete          WaitForFirstConsumer   false                  4m47s
+gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  59m
+
 # List PVC
 kubectl get pvc 
 
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+ebs-mysql-pv-claim   Bound    pvc-f76ad088-0b82-4085-9637-75a02b85d7a6   4Gi        RWO            ebs-sc         5m11s
+
 # List PV
 kubectl get pv
+
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
+pvc-f76ad088-0b82-4085-9637-75a02b85d7a6   4Gi        RWO            Delete           Bound    default/ebs-mysql-pv-claim   ebs-sc                  5m25s
 ```
 ### Create ConfigMap manifest
 - We are going to create a `usermgmt` database schema during the mysql pod creation time which we will leverage when we deploy User Management Microservice. 
