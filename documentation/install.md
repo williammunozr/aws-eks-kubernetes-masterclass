@@ -7,10 +7,10 @@ eksctl create cluster --name=eksdemo1 \
                       --region=us-east-1 \
                       --zones=us-east-1a,us-east-1b \
                       --without-nodegroup \
-                      --profile cloud-nation-production
+                      --profile cloud-nation-dev
 
 # Get List of Clusters
-eksctl get cluster --profile cloud-nation-production
+eksctl get cluster --profile cloud-nation-dev
 ```
 
 ## Create & Associate IAM OIDC Provider for EKS Cluster
@@ -21,7 +21,7 @@ eksctl utils associate-iam-oidc-provider \
     --region us-east-1 \
     --cluster eksdemo1 \
     --approve \
-    --profile cloud-nation-production
+    --profile cloud-nation-dev
 ```
 
 ## Create a node group
@@ -44,13 +44,13 @@ eksctl create nodegroup --cluster=eksdemo1 \
                        --full-ecr-access \
                        --appmesh-access \
                        --alb-ingress-access \
-                       --profile cloud-nation-production
+                       --profile cloud-nation-dev
 ```
 
 ## Create a node group customizing kubelet configuration
 
 ```
-eksctl create nodegroup --config-file=ng-sysctl-enabled.yaml --profile cloud-nation-production
+eksctl create nodegroup --config-file=ng-sysctl-enabled.yaml --profile cloud-nation-dev
 ```
 
 ### ng-sysctl-enabled.yaml file
@@ -77,19 +77,19 @@ nodeGroups:
 ## Get cluster
 
 ```
-eksctl get cluster --profile cloud-nation-production
+eksctl get cluster --profile cloud-nation-dev
 ```
 
 ## Get nodegroups 
 
 ```
-eksctl get nodegroups --cluster=eksdemo1 --profile cloud-nation-production
+eksctl get nodegroups --cluster=eksdemo1 --profile cloud-nation-dev
 ```
 
 ## Connect to cluster
 
 ```
-aws eks --region us-east-1 update-kubeconfig --name eksdemo1 --profile cloud-nation-production
+aws eks --region us-east-1 update-kubeconfig --name eksdemo1 --profile cloud-nation-dev
 ```
 
 ## Edit Pod Security Policy
@@ -174,13 +174,13 @@ net.ipv4.tcp_keepalive_probes = 30
 ### Delete the node group
 
 ```
-eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cloud-nation-production
+eksctl delete nodegroup --cluster=eksdemo1 --name=ng-sysctl-enabled --profile cloud-nation-dev
 ```
 
 ### Delete the cluster
 
 ```
-eksctl delete cluster eksdemo1 --profile cloud-nation-production
+eksctl delete cluster eksdemo1 --profile cloud-nation-dev
 ```
 
 ## Documentation
