@@ -15,10 +15,11 @@ eksctl create cluster --name=calico \
                       --region=us-east-1 \
                       --zones=us-east-1a,us-east-1b,us-east-1c \
                       --without-nodegroup \
-                      --profile dev-cloud-nation
+		      --version=1.22 \
+                      --profile cloud-nation-dev
 
 # Get List of Clusters
-eksctl get cluster --profile dev-cloud-nation
+eksctl get cluster --profile cloud-nation-dev
 ```
 
 ## Create & Associate IAM OIDC Provider for EKS Cluster
@@ -29,7 +30,7 @@ eksctl utils associate-iam-oidc-provider \
     --region us-east-1 \
     --cluster calico \
     --approve \
-    --profile dev-cloud-nation
+    --profile cloud-nation-dev
 ```
 
 ## Create a node group
@@ -54,7 +55,7 @@ eksctl create nodegroup --cluster=calico \
                        --full-ecr-access \
                        --appmesh-access \
                        --alb-ingress-access \
-                       --profile dev-cloud-nation
+                       --profile cloud-nation-dev
 ```
 
 ## Create a private node group
@@ -176,13 +177,13 @@ kubectl -n kube-system logs -f deployment.apps/cluster-autoscaler
 ### Delete the node group
 
 ```
-eksctl delete nodegroup --cluster=calico --name=ng-sysctl-enabled --profile dev-cloud-nation
+eksctl delete nodegroup --cluster=calico --name=ng-sysctl-enabled --profile cloud-nation-dev
 ```
 
 ### Delete the cluster
 
 ```
-eksctl delete cluster calico --profile dev-cloud-nation
+eksctl delete cluster calico --profile cloud-nation-dev
 ```
 
 ## Documentation
